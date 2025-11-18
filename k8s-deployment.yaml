@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: outerbound-weatherflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: outerbound-weatherflow
+  template:
+    metadata:
+      labels:
+        app: outerbound-weatherflow
+    spec:
+      containers:
+      - name: weatherflow
+        image: <your-dockerhub-username>/outerbound:latest
+        imagePullPolicy: Always
+        command: ["python", "deploy.py", "run"]
