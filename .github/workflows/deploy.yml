@@ -1,28 +1,36 @@
-name: Outerbounds CI/CD
-
+name: Deploy Metaflow Flow to Argo
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  deploy:
+  deploy-flow:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
+      # 1. Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      # 3. Install dependencies
+      - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
-          pip install outerbounds metaflow
+          pip install metaflow[argo] outerbounds[gcp]
 
-      - name: Deploy with Outerbounds
+      # 4. Configure Kubernetes (if needed)
+      # Uncomment and add your kubeconfig setup if cluster requires authentication
+      # - name: Set up kubeconfig
+      #   run: |
+      #     mkdir -p ~/.kube
+      #     echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+
+      # 5. Deploy flow to Argo Workflows
+      - name: Deploy Flow
         run: |
-          python deploy.py deploy --environment prod
+          python deploy.py argo-workflows create
