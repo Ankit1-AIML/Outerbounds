@@ -23,14 +23,10 @@ jobs:
           pip install -r requirements.txt
           pip install metaflow[argo] outerbounds[gcp]
 
-      # 4. Configure Kubernetes (if needed)
-      # Uncomment and add your kubeconfig setup if cluster requires authentication
-      # - name: Set up kubeconfig
-      #   run: |
-      #     mkdir -p ~/.kube
-      #     echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-
-      # 5. Deploy flow to Argo Workflows
+      # 4. Deploy flow to Argo Workflows
       - name: Deploy Flow
+        env:
+          SERVICE_URL: ${{ secrets.SERVICE_URL }}
+          METAFLOW_SERVICE_AUTH_KEY: ${{ secrets.METAFLOW_SERVICE_AUTH_KEY }}
         run: |
           python deploy.py argo-workflows create
